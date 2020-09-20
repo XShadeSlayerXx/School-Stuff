@@ -62,10 +62,28 @@ class Dataset:
         return np.random.rand(self.number_of_variables, 1)
 
 class Regression:
-    def __init__(self):
+    global url
+    global train_test_split
+    def __init__(self, number_of_iterations : int = 10, learning_weight : float = None):
+        #initialize the data
         self.data = Dataset(data_url = url, percent = train_test_split)
 
         # collect the relevant info from the dataset
+        self.training_data, self.training_solutions = self.data.separate_variables_from_solutions()
+        self.num_iterations = number_of_iterations
 
-        training_data, training_solutions = self.data.separate_variables_from_solutions()
-        weights = self.data.get_random_weight_array()
+        if learning_weight is None:
+            self.weights = self.data.get_random_weight_array()
+        else:
+            self.weights = learning_weight
+
+    def __iter__(self):
+        #instantiate a base case?
+        return self
+
+    def __next__(self):
+        pass
+
+#add stopping condition as a parameter?
+regression = Regression()
+
