@@ -1,7 +1,6 @@
-from sklearn import datasets, metrics
+from sklearn import metrics
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split as tts
-import numpy as np
 import pandas as pd
 
 url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/00243/yacht_hydrodynamics.data'

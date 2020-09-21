@@ -150,6 +150,7 @@ class Regression:
     def output_info(self) -> str:
         output = f'Weights:\n{self.weights}\n'
         output += f'Learning Rate: {self.learning_rate}\n'
+        output += f'Number of iterations: {self.num_iterations}\n'
         mse = self.calculate_mse()
         output += f'MSE: {mse}\n'
         #output += f'Accuracy v Training: {1 - mse}\n'
