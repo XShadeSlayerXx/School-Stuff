@@ -1,12 +1,17 @@
 import random
 
 #k = ....
-num_points = 10
+min_points = 3
+max_points = 18
+num_point_increment = 3
+
 #datafile to use. expected to be in upper triangular form already
-dataFile = 'usnewsDistance.txt' or None
+dataFile = None# or 'usnewsDistance.txt'
 
 #use this with the other .txt files if you want
-fileToConvert = ''
+# adds a converted file called 'converted'+filename -> e.g. 'usnews.txt' -> 'convertedusnews.txt'
+# this can be used directly in the datafile^^^ variable for subsequent trials
+fileToConvert = 'latimeshealth.txt'
 
 acceptable_error = .0001
 
@@ -132,29 +137,35 @@ with open(dataFile) as f:
 tri_array = tri_array[:-1]
 
 #random sample to avoid collisions
-clusters = random.sample(range(count), num_points)
-data_clusters = [None] * num_points
-old_sse = float('inf')
-older_sse = 0
-new_sse = float('-inf')
-too_high = 0
+cluster_seeds = random.sample(range(count), max_points)
 
-#cluster all the points per cycle
-#choose new center points based on the most well connected point in the cluster to the other points
+for num_points in range(min_points, max_points, num_point_increment):
+    clusters = cluster_seeds.copy()[:num_points]
+    data_clusters = [None] * num_points
+    old_sse = float('inf')
+    older_sse = 0
+    new_sse = float('-inf')
+    too_high = 0
 
-while abs(old_sse - new_sse) > acceptable_error and too_high < 20 and older_sse != new_sse:
-    older_sse = old_sse
-    old_sse = new_sse
-    # group the data around the points
-    data_clusters = findClusters(clusters, num_points, tri_array)
-    # center the points around the most connected data in each cluster
-    clusters = newClusters(data_clusters, tri_array)
+    print('-------------------\n')
+    print('Number of clusters: ',num_points)
+    print('Cluster Start Locations: ', ', '.join([str(x) for x in clusters]))
 
-    too_high += 1
-    print('Iteration num: ',too_high)
-    print('Num points per cluster: ',', '.join([str(len(x)) for x in data_clusters]))
+    #cluster all the points per cycle
+    #choose new center points based on the most well connected point in the cluster to the other points
+
+    while old_sse != new_sse and too_high < 20 and older_sse != new_sse:
+        older_sse = old_sse
+        old_sse = new_sse
+        # group the data around the points
+        data_clusters = findClusters(clusters, num_points, tri_array)
+        # center the points around the most connected data in each cluster
+        clusters = newClusters(data_clusters, tri_array)
+
+        too_high += 1
+    print('Cluster End Locations:   ',', '.join([str(x) for x in clusters]))
+    print('Number of points per cluster: ',', '.join([str(len(x)) for x in data_clusters]))
     error = SSE(clusters, data_clusters, tri_array)
     print('Error per cluster: ',', '.join([str(x) for x in error]))
     new_sse = sum(error)
     print('Overall SSE: ', new_sse)
-    print('-------------------\n')
