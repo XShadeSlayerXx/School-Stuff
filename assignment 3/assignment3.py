@@ -1,19 +1,18 @@
 import random
+import os
 
 #k = ....
 min_points = 3
 max_points = 18
 num_point_increment = 3
 
-#datafile to use. expected to be in upper triangular form already
-dataFile = None# or 'usnewsDistance.txt'
+#datafile to use. expected to be in 'upper' triangular form already
+dataFile = None# or 'convertedlatimeshealth.txt'
 
-#use this with the other .txt files if you want
+#use this with the tweet .txt files the professor provided
 # adds a converted file called 'converted'+filename -> e.g. 'usnews.txt' -> 'convertedusnews.txt'
-# this can be used directly in the datafile^^^ variable for subsequent trials
+# this new file can be used directly in the datafile^^^ variable for subsequent trials
 fileToConvert = 'latimeshealth.txt'
-
-acceptable_error = .0001
 
 def convertFile(filein, fileout):
     with open(filein, 'r', encoding = 'utf8') as file:
@@ -32,7 +31,7 @@ def convertFile(filein, fileout):
                 outfile.write(temp)
 
 def distance(set1 : set, set2 : set) -> float:
-    return 1 - len(set1 & set2)/len(set1 | set2)
+    return round(1 - len(set1 & set2)/len(set1 | set2),3)
 
 #create an upper triangular array from an input file, and store it in the output file
 def computeDistance(infile, outfile):
@@ -127,6 +126,7 @@ if dataFile is None:
     dataFile = 'converted'+fileToConvert
     convertFile(fileToConvert,'temp.txt')
     computeDistance('temp.txt', dataFile)
+    os.remove('temp.txt')
 
 tri_array = []
 count = 0
